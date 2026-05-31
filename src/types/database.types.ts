@@ -13,7 +13,16 @@ export type TrackingType = "reps" | "volume" | "time";
 export interface User {
   id: string;
   name: string;
+  email: string | null;
   created_at: string;
+  is_admin: boolean;
+  profile_completed: boolean;
+  current_weight: number | null;
+  target_weight: number | null;
+  height: number | null;
+  primary_goal: string | null;
+  activity_level: string | null;
+  experience_level: string | null;
 }
 
 export interface MasterExercise {

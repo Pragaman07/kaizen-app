@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Nunito } from "next/font/google";
 import Header from "@/components/layout/Header";
+import { AuthProvider } from "@/components/layout/AuthProvider";
 import { cn } from "@/lib/utils";
 import "./globals.css";
 
@@ -55,8 +56,10 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <body className="flex min-h-full flex-col font-sans">
-        <Header />
-        <main className="flex flex-1 flex-col">{children}</main>
+        <AuthProvider>
+          <Header />
+          <main className="flex flex-1 flex-col">{children}</main>
+        </AuthProvider>
       </body>
     </html>
   );

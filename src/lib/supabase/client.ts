@@ -1,4 +1,4 @@
-import { createClient, type SupabaseClient } from "@supabase/supabase-js";
+import { createBrowserClient } from "@supabase/ssr";
 import type { Database } from "@/types/database.types";
 
 function getSupabaseEnv(): { url: string; anonKey: string } {
@@ -14,9 +14,10 @@ function getSupabaseEnv(): { url: string; anonKey: string } {
   return { url, anonKey };
 }
 
-export function createSupabaseClient(): SupabaseClient<Database> {
+export function createSupabaseClient() {
   const { url, anonKey } = getSupabaseEnv();
-  return createClient<Database>(url, anonKey);
+  return createBrowserClient<Database>(url, anonKey);
 }
 
-export const supabase: SupabaseClient<Database> = createSupabaseClient();
+// Global client instance for browser contexts
+export const supabase = createSupabaseClient();
