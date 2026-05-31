@@ -11,6 +11,7 @@ interface UserState {
   isAdmin: boolean;
   setActiveUser: (id: string) => void;
   setAuthenticatedUser: (id: string | null, isAdmin?: boolean) => void;
+  setAdminStatus: (status: boolean) => void;
   clearAuth: () => void;
 }
 
@@ -21,6 +22,7 @@ export const useUserStore = create<UserState>()(
       authenticatedUserId: null,
       isAdmin: false,
       setActiveUser: (id: string) => set({ activeUserId: id }),
+      setAdminStatus: (status: boolean) => set({ isAdmin: status }),
       setAuthenticatedUser: (id: string | null, isAdmin = false) => 
         set((state) => {
           const isNewLogin = state.authenticatedUserId !== id;

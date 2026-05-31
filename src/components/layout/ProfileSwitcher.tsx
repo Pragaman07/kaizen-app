@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils";
 import { useUserStore, useUserStoreHydrated } from "@/lib/store/useUserStore";
 import { supabase } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 const TEAL = "#1D9E75";
 const TEAL_MIST = "#E1F5EE";
@@ -37,16 +38,18 @@ export default function ProfileSwitcher() {
   const closeMenu = useCallback(() => setOpen(false), []);
 
   useEffect(() => {
-    if (isAdmin && authenticatedUserId) {
+    if (!hydrated || !authenticatedUserId) return;
+    
+    if (isAdmin) {
       supabase.from("users").select("id, name").then(({ data }) => {
         if (data) setUsers(data);
       });
-    } else if (authenticatedUserId) {
+    } else {
       supabase.from("users").select("id, name").eq("id", authenticatedUserId).single().then(({ data }) => {
         if (data) setUsers([data]);
       });
     }
-  }, [isAdmin, authenticatedUserId]);
+  }, [isAdmin, authenticatedUserId, hydrated]);
 
   useEffect(() => {
     if (users.length > 0 && activeUserId && authenticatedUserId) {
@@ -91,6 +94,24 @@ export default function ProfileSwitcher() {
   const activeProfile = users.find((p) => p.id === activeUserId) ?? users.find((p) => p.id === authenticatedUserId);
   const displayName = activeProfile?.name ?? "My Profile";
 
+  if (!isAdmin) {
+    return (
+      <div className="flex items-center gap-4">
+        <Link href="/profile" className="flex items-center gap-2 text-sm font-medium text-[#2C2C2A] hover:text-[#1D9E75] transition-colors">
+          <User className="size-4" />
+          <span>Profile</span>
+        </Link>
+        <button
+          onClick={handleSignOut}
+          className="flex items-center gap-2 text-sm font-medium text-red-600 hover:text-red-700 transition-colors"
+        >
+          <LogOut className="size-4" />
+          <span>Sign Out</span>
+        </button>
+      </div>
+    );
+  }
+
   return (
     <div ref={containerRef} className="relative">
       <button
@@ -122,49 +143,49 @@ export default function ProfileSwitcher() {
         />
       </button>
 
-      {open ? (
+      {open && (
         <ul
           id={menuId}
           role="listbox"
           aria-label="Switch profile"
           className="absolute right-0 z-50 mt-2 min-w-[11rem] overflow-hidden rounded-lg border shadow-md"
-          style={{ borderColor: TEAL_MIST, backgroundColor: "#FFFFFF" }}
+          style={{ borderColor: TEAL_MIST, backgroundColor: "#2C2C2A" }}
         >
-          {isAdmin && users.map((profile) => {
+          {users.map((profile) => {
             const isActive = profile.id === activeUserId;
             return (
               <li key={profile.id} role="option" aria-selected={isActive}>
                 <button
                   type="button"
-                  className="flex w-full items-center gap-3 px-3 py-2.5 text-left text-sm transition-colors hover:opacity-90"
-                  style={{ color: CHARCOAL, backgroundColor: isActive ? TEAL_MIST : "#FFFFFF" }}
-                  onMouseEnter={(e) => { if (!isActive) e.currentTarget.style.backgroundColor = TEAL_MIST; }}
-                  onMouseLeave={(e) => { if (!isActive) e.currentTarget.style.backgroundColor = "#FFFFFF"; }}
+                  className="flex w-full items-center gap-3 px-3 py-2.5 text-left text-sm transition-colors hover:opacity-90 text-white"
+                  style={{ backgroundColor: isActive ? "#3f3f3c" : "#2C2C2A" }}
+                  onMouseEnter={(e) => { if (!isActive) e.currentTarget.style.backgroundColor = "#3f3f3c"; }}
+                  onMouseLeave={(e) => { if (!isActive) e.currentTarget.style.backgroundColor = "#2C2C2A"; }}
                   onClick={() => { setActiveUser(profile.id); closeMenu(); }}
                 >
                   <span className="flex size-8 shrink-0 items-center justify-center rounded-full text-sm font-semibold" style={{ backgroundColor: TEAL_MIST, color: TEAL }} aria-hidden>
                     {profileInitial(profile.name)}
                   </span>
                   <span className="flex-1 font-medium">{profile.name}</span>
-                  {isActive ? <Check className="size-4 shrink-0" style={{ color: TEAL }} aria-hidden /> : null}
+                  {isActive && <Check className="size-4 shrink-0" style={{ color: TEAL }} aria-hidden />}
                 </button>
               </li>
             );
           })}
           
-          {isAdmin && <div className="h-px w-full bg-[#888780] opacity-20 my-1" />}
+          <div className="h-px w-full bg-[#888780] opacity-20 my-1" />
           
           <li>
             <button
               type="button"
-              className="flex w-full items-center gap-3 px-3 py-2.5 text-left text-sm transition-colors hover:bg-gray-100"
-              style={{ color: CHARCOAL, backgroundColor: "#FFFFFF" }}
-              onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = TEAL_MIST; }}
-              onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = "#FFFFFF"; }}
+              className="flex w-full items-center gap-3 px-3 py-2.5 text-left text-sm transition-colors text-white"
+              style={{ backgroundColor: "#2C2C2A" }}
+              onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = "#3f3f3c"; }}
+              onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = "#2C2C2A"; }}
               onClick={() => { window.location.href = "/admin/plan-builder"; closeMenu(); }}
             >
               <span className="flex size-8 shrink-0 items-center justify-center rounded-full text-sm font-semibold" style={{ backgroundColor: "transparent" }} aria-hidden>
-                <Wrench className="size-4 shrink-0" style={{ color: CHARCOAL }} />
+                <Wrench className="size-4 shrink-0 text-white" />
               </span>
               <span className="flex-1 font-medium">Plan Builder</span>
             </button>
@@ -172,14 +193,14 @@ export default function ProfileSwitcher() {
           <li>
             <button
               type="button"
-              className="flex w-full items-center gap-3 px-3 py-2.5 text-left text-sm transition-colors hover:bg-gray-100"
-              style={{ color: CHARCOAL, backgroundColor: "#FFFFFF" }}
-              onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = TEAL_MIST; }}
-              onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = "#FFFFFF"; }}
-              onClick={() => { window.location.href = `/profile`; closeMenu(); }}
+              className="flex w-full items-center gap-3 px-3 py-2.5 text-left text-sm transition-colors text-white"
+              style={{ backgroundColor: "#2C2C2A" }}
+              onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = "#3f3f3c"; }}
+              onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = "#2C2C2A"; }}
+              onClick={() => { window.location.href = "/profile"; closeMenu(); }}
             >
               <span className="flex size-8 shrink-0 items-center justify-center rounded-full text-sm font-semibold" style={{ backgroundColor: "transparent" }} aria-hidden>
-                <User className="size-4 shrink-0" style={{ color: CHARCOAL }} />
+                <User className="size-4 shrink-0 text-white" />
               </span>
               <span className="flex-1 font-medium">My Profile</span>
             </button>
@@ -187,16 +208,16 @@ export default function ProfileSwitcher() {
           <li>
             <button
               type="button"
-              className="flex w-full items-center gap-3 px-3 py-2.5 text-left text-sm transition-colors hover:bg-gray-100"
-              style={{ color: CHARCOAL, backgroundColor: "#FFFFFF" }}
-              onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = TEAL_MIST; }}
-              onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = "#FFFFFF"; }}
+              className="flex w-full items-center gap-3 px-3 py-2.5 text-left text-sm transition-colors text-white"
+              style={{ backgroundColor: "#2C2C2A" }}
+              onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = "#3f3f3c"; }}
+              onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = "#2C2C2A"; }}
               onClick={() => { window.location.href = `/api/export?userId=${activeUserId || authenticatedUserId}`; closeMenu(); }}
             >
               <span className="flex size-8 shrink-0 items-center justify-center rounded-full text-sm font-semibold" style={{ backgroundColor: "transparent" }} aria-hidden>
-                <Download className="size-4 shrink-0" style={{ color: CHARCOAL }} />
+                <Download className="size-4 shrink-0 text-white" />
               </span>
-              <span className="flex-1 font-medium">Export Data (.csv)</span>
+              <span className="flex-1 font-medium">Export Data</span>
             </button>
           </li>
 
@@ -205,20 +226,20 @@ export default function ProfileSwitcher() {
           <li>
             <button
               type="button"
-              className="flex w-full items-center gap-3 px-3 py-2.5 text-left text-sm transition-colors hover:bg-red-50 text-red-600"
-              style={{ backgroundColor: "#FFFFFF" }}
-              onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = "#FEF2F2"; }}
-              onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = "#FFFFFF"; }}
+              className="flex w-full items-center gap-3 px-3 py-2.5 text-left text-sm transition-colors text-red-400"
+              style={{ backgroundColor: "#2C2C2A" }}
+              onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = "#451a1a"; }}
+              onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = "#2C2C2A"; }}
               onClick={() => { handleSignOut(); closeMenu(); }}
             >
               <span className="flex size-8 shrink-0 items-center justify-center rounded-full text-sm font-semibold" style={{ backgroundColor: "transparent" }} aria-hidden>
-                <LogOut className="size-4 shrink-0 text-red-600" />
+                <LogOut className="size-4 shrink-0 text-red-400" />
               </span>
-              <span className="flex-1 font-medium text-red-600">Sign Out</span>
+              <span className="flex-1 font-medium">Sign Out</span>
             </button>
           </li>
         </ul>
-      ) : null}
+      )}
     </div>
   );
 }
