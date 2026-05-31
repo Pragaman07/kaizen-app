@@ -59,9 +59,7 @@
   --radius-md: 0.5rem;
   --radius-lg: 0.75rem;
 
-  /* Typography system */
-  --font-sans:    'Inter', system-ui, sans-serif;
-  --font-heading: 'DM Serif Display', serif;
+  /* Typography system - Next.js handles --font-sans and --font-heading via layout.tsx */
   --font-mono: 'Geist Mono', 'SFMono-Regular', Menlo, monospace;
 
   /* Prevent dark mode, all tokens are for light only! */
