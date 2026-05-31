@@ -12,13 +12,14 @@ interface HabitDefinition {
   field: DailyHabitField;
   label: string;
   manual: boolean;
+  subtext?: string;
 }
 
 const HABITS: readonly HabitDefinition[] = [
   { field: "workout_done", label: "Workout", manual: false },
-  { field: "nutrition_done", label: "Nutrition", manual: true },
-  { field: "night_routine_done", label: "Night Routine", manual: true },
-  { field: "supplements_done", label: "Supplements", manual: true },
+  { field: "nutrition_done", label: "Nutrition", manual: true, subtext: "Sattu, 3-4 eggs, green moong & chana bowl" },
+  { field: "night_routine_done", label: "Night Routine", manual: true, subtext: "500ml milk, walnuts & nut mix" },
+  { field: "supplements_done", label: "Supplements", manual: true, subtext: "Creatine (3-5g), Whey, Omega-3, D3, B12" },
 ] as const;
 
 export interface HabitChecklistProps {
@@ -42,47 +43,59 @@ export default function HabitChecklist({
         Today&apos;s pillars
       </h2>
       <ul className="mt-4 space-y-3">
-        {HABITS.map(({ field, label, manual }) => {
+        {HABITS.map(({ field, label, manual, subtext }) => {
           const checked = dailyTracking[field];
           return (
             <li key={field}>
               <label
                 className={cn(
-                  "flex cursor-pointer items-center gap-3 rounded-md px-1 py-2 transition-colors",
+                  "flex cursor-pointer items-start gap-3 rounded-md px-1 py-2 transition-colors",
                   !manual && "cursor-default opacity-90",
                 )}
               >
-                <Checkbox
-                  checked={checked}
-                  disabled={!manual}
-                  onCheckedChange={(next) => {
-                    if (!manual) return;
-                    onToggle(field, next === true);
-                  }}
-                  className={cn(
-                    "size-5 rounded-[4px] border-border",
-                    checked &&
-                      "border-[#1D9E75] bg-[#E1F5EE] text-[#1D9E75] data-checked:border-[#1D9E75] data-checked:bg-[#E1F5EE] data-checked:text-[#1D9E75]",
+                <div className="pt-0.5">
+                  <Checkbox
+                    checked={checked}
+                    disabled={!manual}
+                    onCheckedChange={(next) => {
+                      if (!manual) return;
+                      onToggle(field, next === true);
+                    }}
+                    className={cn(
+                      "size-5 rounded-[4px] border-border",
+                      checked &&
+                        "border-[#1D9E75] bg-[#E1F5EE] text-[#1D9E75] data-checked:border-[#1D9E75] data-checked:bg-[#E1F5EE] data-checked:text-[#1D9E75]",
+                    )}
+                    style={
+                      checked
+                        ? {
+                            borderColor: KAIZEN_TEAL,
+                            backgroundColor: TEAL_MIST,
+                            color: KAIZEN_TEAL,
+                          }
+                        : undefined
+                    }
+                    aria-label={label}
+                  />
+                </div>
+                <div className="flex flex-col gap-0.5">
+                  <span
+                    className={cn(
+                      "text-base text-foreground",
+                      checked && "text-zinc-400 line-through",
+                    )}
+                  >
+                    {label}
+                  </span>
+                  {subtext && (
+                    <span className={cn(
+                      "text-sm text-[#888780]",
+                      checked && "text-zinc-400 line-through"
+                    )}>
+                      {subtext}
+                    </span>
                   )}
-                  style={
-                    checked
-                      ? {
-                          borderColor: KAIZEN_TEAL,
-                          backgroundColor: TEAL_MIST,
-                          color: KAIZEN_TEAL,
-                        }
-                      : undefined
-                  }
-                  aria-label={label}
-                />
-                <span
-                  className={cn(
-                    "text-base text-foreground",
-                    checked && "text-zinc-400 line-through",
-                  )}
-                >
-                  {label}
-                </span>
+                </div>
                 {!manual ? (
                   <span className="ml-auto text-xs text-muted-foreground">
                     Auto on workout complete

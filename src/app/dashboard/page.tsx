@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import HabitChecklist from "@/components/dashboard/HabitChecklist";
 import { TabController } from "@/components/dashboard/TabController";
-import { VolumeChart, VolumeDataPoint } from "@/components/dashboard/VolumeChart";
+import { ProgressView } from "@/components/dashboard/ProgressView";
 import { calculateConsistency } from "@/lib/utils/streakMath";
 import {
   DashboardQueryError,
@@ -13,6 +13,7 @@ import {
   toggleDailyHabit,
   fetchVolumeHistory,
   fetchAllDailyTracking,
+  fetchTodayWorkout,
 } from "@/lib/supabase/queries";
 import {
   useUserStore,
@@ -29,9 +30,10 @@ export default function DashboardPage() {
   const [data, setData] = useState<DashboardData | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [hasWorkoutToday, setHasWorkoutToday] = useState(true);
 
   const [activeTab, setActiveTab] = useState<"today" | "progress">("today");
-  const [volumeData, setVolumeData] = useState<VolumeDataPoint[]>([]);
+  const [progressData, setProgressData] = useState<any[]>([]);
   const [calculatedStreak, setCalculatedStreak] = useState<number | null>(null);
 
   useEffect(() => {
@@ -48,10 +50,17 @@ export default function DashboardPage() {
       setLoading(true);
       setError(null);
 
+      const days = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
+      const todayStr = days[new Date().getDay()];
+
       try {
-        const dashboard = await fetchDashboardData(userId);
+        const [dashboard, todaysWorkout] = await Promise.all([
+          fetchDashboardData(userId),
+          fetchTodayWorkout(userId, todayStr)
+        ]);
         if (!cancelled) {
           setData(dashboard);
+          setHasWorkoutToday(todaysWorkout.length > 0);
         }
       } catch (err) {
         if (!cancelled) {
@@ -89,7 +98,7 @@ export default function DashboardPage() {
         ]);
 
         if (!cancelled) {
-          setVolumeData(volume);
+          setProgressData(volume);
           const freezes = data?.userStats?.freezes_available || 0;
           setCalculatedStreak(calculateConsistency(trackingRecords, freezes));
         }
@@ -142,16 +151,20 @@ export default function DashboardPage() {
         <div>
           <h1 className="font-heading text-4xl text-primary">Daily Discipline</h1>
           {data?.userStats ? (
-            <p className="mt-2 text-sm text-muted-foreground">
-              Current streak:{" "}
-              <span className="font-medium text-foreground">
-                {activeTab === "progress" && calculatedStreak !== null 
-                  ? calculatedStreak 
-                  : data.userStats.current_streak} days
+            <div className="mt-6 flex flex-col">
+              <span className="text-sm text-[#888780] font-medium uppercase tracking-wider mb-1">Active Streak</span>
+              <div className="flex items-baseline gap-3">
+                <span className="font-heading text-6xl text-[#EF9F27]">
+                  {activeTab === "progress" && calculatedStreak !== null 
+                    ? calculatedStreak 
+                    : data.userStats.current_streak}
+                </span>
+                <span className="font-heading text-2xl text-[#EF9F27]">Days</span>
+              </div>
+              <span className="text-sm text-[#888780] mt-1">
+                Freezes available: {data.userStats.freezes_available}
               </span>
-              {" · "}
-              Freezes: {data.userStats.freezes_available}
-            </p>
+            </div>
           ) : null}
         </div>
         
@@ -164,15 +177,21 @@ export default function DashboardPage() {
         <div className="mb-8">
           <button
             onClick={() => router.push("/workout")}
-            disabled={data.dailyTracking.workout_done}
+            disabled={data.dailyTracking.workout_done || !hasWorkoutToday}
             className={cn(
               "w-full py-4 text-lg font-bold rounded-2xl transition-all shadow-md",
-              data.dailyTracking.workout_done
+              !hasWorkoutToday
+                ? "bg-[#888780] text-white cursor-not-allowed shadow-none"
+                : data.dailyTracking.workout_done
                 ? "bg-gray-300 text-gray-500 cursor-not-allowed shadow-none"
                 : "bg-[#1D9E75] hover:bg-[#16825f] text-white"
             )}
           >
-            {data.dailyTracking.workout_done ? "Workout Complete" : "Start Today's Workout"}
+            {!hasWorkoutToday 
+              ? "Scheduled Rest Day" 
+              : data.dailyTracking.workout_done 
+              ? "Workout Complete" 
+              : "Start Today's Workout"}
           </button>
         </div>
       )}
@@ -208,7 +227,7 @@ export default function DashboardPage() {
           />
         ) : (
           <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
-            <VolumeChart data={volumeData} />
+            <ProgressView rawData={progressData} />
           </div>
         )
       ) : null}

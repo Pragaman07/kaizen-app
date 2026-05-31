@@ -6,7 +6,7 @@ export async function seedPragamanPlan(userId: string) {
     // MONDAY
     {
       user_id: userId,
-      day_of_week: "Monday",
+      day_of_week: "MON",
       exercise_name: "Standard Push-Ups",
       tracking_type: "reps",
       target_sets: 3,
@@ -15,7 +15,7 @@ export async function seedPragamanPlan(userId: string) {
     },
     {
       user_id: userId,
-      day_of_week: "Monday",
+      day_of_week: "MON",
       exercise_name: "Diamond Push-Ups",
       tracking_type: "reps",
       target_sets: 3,
@@ -24,7 +24,7 @@ export async function seedPragamanPlan(userId: string) {
     },
     {
       user_id: userId,
-      day_of_week: "Monday",
+      day_of_week: "MON",
       exercise_name: "Single-Arm Dumbbell Bicep Curls",
       tracking_type: "reps",
       target_sets: 4,
@@ -33,7 +33,7 @@ export async function seedPragamanPlan(userId: string) {
     },
     {
       user_id: userId,
-      day_of_week: "Monday",
+      day_of_week: "MON",
       exercise_name: "Single-Arm Dumbbell Tricep Kickbacks",
       tracking_type: "reps",
       target_sets: 3,
@@ -44,7 +44,7 @@ export async function seedPragamanPlan(userId: string) {
     // TUESDAY
     {
       user_id: userId,
-      day_of_week: "Tuesday",
+      day_of_week: "TUE",
       exercise_name: "Bodyweight Squats (Time Under Tension)",
       tracking_type: "reps",
       target_sets: 4,
@@ -53,7 +53,7 @@ export async function seedPragamanPlan(userId: string) {
     },
     {
       user_id: userId,
-      day_of_week: "Tuesday",
+      day_of_week: "TUE",
       exercise_name: "Bulgarian Split Squats",
       tracking_type: "reps",
       target_sets: 3,
@@ -62,7 +62,7 @@ export async function seedPragamanPlan(userId: string) {
     },
     {
       user_id: userId,
-      day_of_week: "Tuesday",
+      day_of_week: "TUE",
       exercise_name: "Dumbbell Lunges",
       tracking_type: "reps",
       target_sets: 3,
@@ -71,7 +71,7 @@ export async function seedPragamanPlan(userId: string) {
     },
     {
       user_id: userId,
-      day_of_week: "Tuesday",
+      day_of_week: "TUE",
       exercise_name: "Single-Leg Calf Raises",
       tracking_type: "reps",
       target_sets: 4,
@@ -82,7 +82,7 @@ export async function seedPragamanPlan(userId: string) {
     // WEDNESDAY
     {
       user_id: userId,
-      day_of_week: "Wednesday",
+      day_of_week: "WED",
       exercise_name: "Outdoor Run",
       tracking_type: "time",
       target_sets: 1,
@@ -91,7 +91,7 @@ export async function seedPragamanPlan(userId: string) {
     },
     {
       user_id: userId,
-      day_of_week: "Wednesday",
+      day_of_week: "WED",
       exercise_name: "Planks",
       tracking_type: "time",
       target_sets: 3,
@@ -100,7 +100,7 @@ export async function seedPragamanPlan(userId: string) {
     },
     {
       user_id: userId,
-      day_of_week: "Wednesday",
+      day_of_week: "WED",
       exercise_name: "Bicycle Crunches",
       tracking_type: "reps",
       target_sets: 3,
@@ -109,7 +109,7 @@ export async function seedPragamanPlan(userId: string) {
     },
     {
       user_id: userId,
-      day_of_week: "Wednesday",
+      day_of_week: "WED",
       exercise_name: "Lying Leg Raises",
       tracking_type: "reps",
       target_sets: 3,
@@ -118,7 +118,7 @@ export async function seedPragamanPlan(userId: string) {
     },
     {
       user_id: userId,
-      day_of_week: "Wednesday",
+      day_of_week: "WED",
       exercise_name: "Weighted Russian Twists",
       tracking_type: "reps",
       target_sets: 3,
@@ -129,7 +129,7 @@ export async function seedPragamanPlan(userId: string) {
     // THURSDAY
     {
       user_id: userId,
-      day_of_week: "Thursday",
+      day_of_week: "THU",
       exercise_name: "Shoulder Rotations & Arm Circles",
       tracking_type: "time",
       target_sets: 1,
@@ -138,7 +138,7 @@ export async function seedPragamanPlan(userId: string) {
     },
     {
       user_id: userId,
-      day_of_week: "Thursday",
+      day_of_week: "THU",
       exercise_name: "Child’s Pose",
       tracking_type: "time",
       target_sets: 1,
@@ -147,7 +147,7 @@ export async function seedPragamanPlan(userId: string) {
     },
     {
       user_id: userId,
-      day_of_week: "Thursday",
+      day_of_week: "THU",
       exercise_name: "Hamstring & Quad Stretches",
       tracking_type: "time",
       target_sets: 1,
@@ -156,7 +156,7 @@ export async function seedPragamanPlan(userId: string) {
     },
     {
       user_id: userId,
-      day_of_week: "Thursday",
+      day_of_week: "THU",
       exercise_name: "Light Walk",
       tracking_type: "time",
       target_sets: 1,
@@ -167,7 +167,7 @@ export async function seedPragamanPlan(userId: string) {
     // FRIDAY
     {
       user_id: userId,
-      day_of_week: "Friday",
+      day_of_week: "FRI",
       exercise_name: "Standard Push-Ups (Tempo Focus)",
       tracking_type: "reps",
       target_sets: 3,
@@ -176,7 +176,7 @@ export async function seedPragamanPlan(userId: string) {
     },
     {
       user_id: userId,
-      day_of_week: "Friday",
+      day_of_week: "FRI",
       exercise_name: "Diamond Push-Ups",
       tracking_type: "reps",
       target_sets: 3,
@@ -185,7 +185,7 @@ export async function seedPragamanPlan(userId: string) {
     },
     {
       user_id: userId,
-      day_of_week: "Friday",
+      day_of_week: "FRI",
       exercise_name: "Single-Arm Dumbbell Hammer Curls",
       tracking_type: "reps",
       target_sets: 4,
@@ -194,7 +194,7 @@ export async function seedPragamanPlan(userId: string) {
     },
     {
       user_id: userId,
-      day_of_week: "Friday",
+      day_of_week: "FRI",
       exercise_name: "Single-Arm Dumbbell Floor Press",
       tracking_type: "reps",
       target_sets: 4,
@@ -205,7 +205,7 @@ export async function seedPragamanPlan(userId: string) {
     // SATURDAY
     {
       user_id: userId,
-      day_of_week: "Saturday",
+      day_of_week: "SAT",
       exercise_name: "Dumbbell Goblet Squats",
       tracking_type: "reps",
       target_sets: 4,
@@ -214,7 +214,7 @@ export async function seedPragamanPlan(userId: string) {
     },
     {
       user_id: userId,
-      day_of_week: "Saturday",
+      day_of_week: "SAT",
       exercise_name: "Single-Leg Romanian Deadlifts (RDLs)",
       tracking_type: "reps",
       target_sets: 3,
@@ -223,7 +223,7 @@ export async function seedPragamanPlan(userId: string) {
     },
     {
       user_id: userId,
-      day_of_week: "Saturday",
+      day_of_week: "SAT",
       exercise_name: "Reverse Dumbbell Lunges",
       tracking_type: "reps",
       target_sets: 3,
@@ -232,7 +232,7 @@ export async function seedPragamanPlan(userId: string) {
     },
     {
       user_id: userId,
-      day_of_week: "Saturday",
+      day_of_week: "SAT",
       exercise_name: "Single-Leg Calf Raises",
       tracking_type: "reps",
       target_sets: 4,
@@ -243,7 +243,7 @@ export async function seedPragamanPlan(userId: string) {
     // SUNDAY
     {
       user_id: userId,
-      day_of_week: "Sunday",
+      day_of_week: "SUN",
       exercise_name: "Planks",
       tracking_type: "time",
       target_sets: 3,
@@ -252,7 +252,7 @@ export async function seedPragamanPlan(userId: string) {
     },
     {
       user_id: userId,
-      day_of_week: "Sunday",
+      day_of_week: "SUN",
       exercise_name: "Bicycle Crunches",
       tracking_type: "reps",
       target_sets: 3,
@@ -261,7 +261,7 @@ export async function seedPragamanPlan(userId: string) {
     },
     {
       user_id: userId,
-      day_of_week: "Sunday",
+      day_of_week: "SUN",
       exercise_name: "Lying Leg Raises",
       tracking_type: "reps",
       target_sets: 3,
@@ -270,7 +270,7 @@ export async function seedPragamanPlan(userId: string) {
     },
     {
       user_id: userId,
-      day_of_week: "Sunday",
+      day_of_week: "SUN",
       exercise_name: "Trekking (The Hike)",
       tracking_type: "time",
       target_sets: 1,

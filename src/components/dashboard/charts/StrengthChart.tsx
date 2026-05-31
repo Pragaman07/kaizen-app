@@ -1,39 +1,25 @@
 "use client";
 
 import { Bar, BarChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+import type { ChartDataPoint } from "./EnduranceChart";
 
-export interface VolumeDataPoint {
-  date: string;
-  volume: number;
-}
-
-export function VolumeChart({ data }: { data: VolumeDataPoint[] }) {
+export function StrengthChart({ data }: { data: ChartDataPoint[] }) {
   if (!data || data.length === 0) {
     return (
       <div className="flex h-80 flex-col items-center justify-center rounded-xl border border-dashed border-gray-300 bg-white p-6 text-center shadow-sm">
         <img src="/assets/panda-resting.svg" alt="Resting Panda" className="w-32 h-32 opacity-60 mb-4" />
-        <h2 className="text-[24px] font-medium text-[#2C2C2A] mb-1">No volume data available</h2>
+        <h2 className="text-[24px] font-medium text-[#2C2C2A] mb-1">No strength data available</h2>
         <p className="text-[15px] text-[#888780]">Log a workout to see your progress!</p>
       </div>
     );
   }
 
-  const formattedData = data.map((d) => {
-    // Assuming d.date is "YYYY-MM-DD"
-    const dateParts = d.date.split("-");
-    const dateObj = new Date(parseInt(dateParts[0]), parseInt(dateParts[1]) - 1, parseInt(dateParts[2]));
-    return {
-      ...d,
-      displayDate: dateObj.toLocaleDateString(undefined, { month: "short", day: "numeric" }),
-    };
-  });
-
   return (
     <div className="h-80 w-full rounded-xl border border-border bg-card p-6 shadow-sm">
-      <h3 className="mb-6 font-heading text-xl text-primary">Volume (Progressive Overload)</h3>
+      <h3 className="mb-6 font-heading text-xl text-primary">Volume (Strength)</h3>
       <div className="h-[220px] w-full">
         <ResponsiveContainer width="100%" height="100%">
-          <BarChart data={formattedData} margin={{ top: 0, right: 0, left: -20, bottom: 0 }}>
+          <BarChart data={data} margin={{ top: 0, right: 0, left: -20, bottom: 0 }}>
             <XAxis 
               dataKey="displayDate" 
               axisLine={false} 
@@ -52,7 +38,7 @@ export function VolumeChart({ data }: { data: VolumeDataPoint[] }) {
               formatter={(value: any) => [`${Number(value).toLocaleString()} lbs`, "Total Volume"]}
               labelStyle={{ color: "#888780", marginBottom: "4px" }}
             />
-            <Bar dataKey="volume" fill="#1D9E75" radius={[4, 4, 0, 0]} maxBarSize={40} />
+            <Bar dataKey="value" fill="#1D9E75" radius={[4, 4, 0, 0]} maxBarSize={40} />
           </BarChart>
         </ResponsiveContainer>
       </div>

@@ -64,9 +64,10 @@ export default function WorkoutPage() {
   if (todaysPlan.length === 0) {
     return (
       <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-4">
-        <div className="max-w-md w-full p-8 text-center bg-white border border-dashed border-gray-300 rounded-3xl shadow-sm">
-          <h2 className="text-2xl font-bold text-gray-800 mb-2">Rest Day</h2>
-          <p className="text-gray-500">Rest Day or No Plan Assigned.</p>
+        <div className="flex flex-col items-center justify-center max-w-md w-full p-12 text-center bg-white border border-dashed border-gray-300 rounded-3xl shadow-sm">
+          <img src="/assets/panda-resting.svg" alt="Resting Panda" className="w-32 h-32 opacity-60 mb-6" />
+          <h2 className="text-[24px] font-medium text-[#2C2C2A] mb-1">Rest Day</h2>
+          <p className="text-[15px] text-[#888780]">Rest Day or No Plan Assigned.</p>
         </div>
       </div>
     );

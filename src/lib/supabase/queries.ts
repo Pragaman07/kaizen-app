@@ -319,7 +319,9 @@ export async function fetchVolumeHistory(userId: string) {
       set_logs (
         reps,
         weight,
+        duration_seconds,
         master_exercises (
+          exercise_name,
           tracking_type
         )
       )
@@ -331,31 +333,7 @@ export async function fetchVolumeHistory(userId: string) {
     throw mapPostgrestError("Failed to fetch volume history.", error);
   }
 
-  const volumeByDay: Record<string, number> = {};
-
-  (data || []).forEach((log: any) => {
-    const dateKey = log.completed_at ? log.completed_at.substring(0, 10) : "";
-    if (!dateKey) return;
-    
-    let dailyVolume = 0;
-    
-    (log.set_logs || []).forEach((set: any) => {
-      const reps = set.reps || 0;
-      let weight = set.weight || 0;
-      
-      if (weight === 0) {
-        weight = 1;
-      }
-      
-      dailyVolume += reps * weight;
-    });
-    
-    volumeByDay[dateKey] = (volumeByDay[dateKey] || 0) + dailyVolume;
-  });
-
-  return Object.entries(volumeByDay)
-    .map(([date, volume]) => ({ date, volume }))
-    .sort((a, b) => a.date.localeCompare(b.date));
+  return data || [];
 }
 
 export async function fetchAllDailyTracking(userId: string): Promise<DailyTracking[]> {
