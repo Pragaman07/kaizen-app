@@ -57,7 +57,7 @@ export function BuilderInputRow({
       </div>
 
       <div className="w-full md:w-1/6">
-        <label className="block text-xs font-semibold text-gray-500 mb-1">Default Weight (lbs)</label>
+        <label className="block text-xs font-semibold text-gray-500 mb-1">Default Weight (kg)</label>
         <Input
           type="number"
           value={exercise.default_weight || ""}

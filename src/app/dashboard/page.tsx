@@ -14,6 +14,7 @@ import {
   fetchVolumeHistory,
   fetchAllDailyTracking,
   fetchTodayWorkout,
+  fetchHabitPlan,
 } from "@/lib/supabase/queries";
 import {
   useUserStore,
@@ -35,6 +36,7 @@ export default function DashboardPage() {
   const [activeTab, setActiveTab] = useState<"today" | "progress">("today");
   const [progressData, setProgressData] = useState<any[]>([]);
   const [calculatedStreak, setCalculatedStreak] = useState<number | null>(null);
+  const [habitPlan, setHabitPlan] = useState<any>(null);
 
   useEffect(() => {
     if (!hydrated || !activeUserId) {
@@ -54,13 +56,18 @@ export default function DashboardPage() {
       const todayStr = days[new Date().getDay()];
 
       try {
-        const [dashboard, todaysWorkout] = await Promise.all([
+        const [dashboard, todaysWorkout, trackingRecords, habits] = await Promise.all([
           fetchDashboardData(userId),
-          fetchTodayWorkout(userId, todayStr)
+          fetchTodayWorkout(userId, todayStr),
+          fetchAllDailyTracking(userId),
+          fetchHabitPlan(userId, todayStr)
         ]);
         if (!cancelled) {
           setData(dashboard);
           setHasWorkoutToday(todaysWorkout.length > 0);
+          setHabitPlan(habits);
+          const freezes = dashboard.userStats?.freezes_available || 0;
+          setCalculatedStreak(calculateConsistency(trackingRecords, freezes));
         }
       } catch (err) {
         if (!cancelled) {
@@ -92,15 +99,10 @@ export default function DashboardPage() {
 
     async function loadProgress() {
       try {
-        const [volume, trackingRecords] = await Promise.all([
-          fetchVolumeHistory(activeUserId!),
-          fetchAllDailyTracking(activeUserId!),
-        ]);
+        const volume = await fetchVolumeHistory(activeUserId!);
 
         if (!cancelled) {
           setProgressData(volume);
-          const freezes = data?.userStats?.freezes_available || 0;
-          setCalculatedStreak(calculateConsistency(trackingRecords, freezes));
         }
       } catch (err) {
         console.error("Failed to load progress data:", err);
@@ -155,7 +157,7 @@ export default function DashboardPage() {
               <span className="text-sm text-[#888780] font-medium uppercase tracking-wider mb-1">Active Streak</span>
               <div className="flex items-baseline gap-3">
                 <span className="font-heading text-6xl text-[#EF9F27]">
-                  {activeTab === "progress" && calculatedStreak !== null 
+                  {calculatedStreak !== null 
                     ? calculatedStreak 
                     : data.userStats.current_streak}
                 </span>
@@ -220,7 +222,8 @@ export default function DashboardPage() {
       {hydrated && activeUserId && data && !loading ? (
         activeTab === "today" ? (
           <HabitChecklist
-            dailyTracking={data.dailyTracking}
+            dailyTracking={data?.dailyTracking}
+            habitPlan={habitPlan}
             onToggle={(field, value) => {
               void handleToggle(field, value);
             }}

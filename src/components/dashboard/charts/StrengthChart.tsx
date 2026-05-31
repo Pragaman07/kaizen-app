@@ -7,7 +7,7 @@ export function StrengthChart({ data }: { data: ChartDataPoint[] }) {
   if (!data || data.length === 0) {
     return (
       <div className="flex h-80 flex-col items-center justify-center rounded-xl border border-dashed border-gray-300 bg-white p-6 text-center shadow-sm">
-        <img src="/assets/panda-resting.svg" alt="Resting Panda" className="w-32 h-32 opacity-60 mb-4" />
+        <img src="/icons/panda.webp" alt="Resting Panda" className="w-32 h-32 opacity-60 mb-4" />
         <h2 className="text-[24px] font-medium text-[#2C2C2A] mb-1">No strength data available</h2>
         <p className="text-[15px] text-[#888780]">Log a workout to see your progress!</p>
       </div>
@@ -35,7 +35,7 @@ export function StrengthChart({ data }: { data: ChartDataPoint[] }) {
             <Tooltip
               cursor={{ fill: "#f3f4f6" }}
               contentStyle={{ borderRadius: "8px", border: "none", boxShadow: "0 4px 6px -1px rgba(0,0,0,0.1)", fontWeight: 500 }}
-              formatter={(value: any) => [`${Number(value).toLocaleString()} lbs`, "Total Volume"]}
+              formatter={(value: any) => [`${Number(value).toLocaleString()} kg`, "Total Volume"]}
               labelStyle={{ color: "#888780", marginBottom: "4px" }}
             />
             <Bar dataKey="value" fill="#1D9E75" radius={[4, 4, 0, 0]} maxBarSize={40} />

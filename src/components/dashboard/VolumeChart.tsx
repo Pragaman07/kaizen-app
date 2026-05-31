@@ -49,7 +49,7 @@ export function VolumeChart({ data }: { data: VolumeDataPoint[] }) {
             <Tooltip
               cursor={{ fill: "#f3f4f6" }}
               contentStyle={{ borderRadius: "8px", border: "none", boxShadow: "0 4px 6px -1px rgba(0,0,0,0.1)", fontWeight: 500 }}
-              formatter={(value: any) => [`${Number(value).toLocaleString()} lbs`, "Total Volume"]}
+              formatter={(value: any) => [`${Number(value).toLocaleString()} kg`, "Total Volume"]}
               labelStyle={{ color: "#888780", marginBottom: "4px" }}
             />
             <Bar dataKey="volume" fill="#1D9E75" radius={[4, 4, 0, 0]} maxBarSize={40} />

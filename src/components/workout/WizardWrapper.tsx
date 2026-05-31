@@ -10,7 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { submitWorkoutSession } from "@/lib/supabase/queries";
 
-export function WizardWrapper({ exercises }: { exercises: MasterExercise[] }) {
+export function WizardWrapper({ exercises, isReadOnly = false }: { exercises: MasterExercise[], isReadOnly?: boolean }) {
   const router = useRouter();
   const { activeUserId } = useUserStore();
   const { 
@@ -46,6 +46,10 @@ export function WizardWrapper({ exercises }: { exercises: MasterExercise[] }) {
 
   const handleNextOrSave = async () => {
     if (isLastStep) {
+      if (isReadOnly) {
+        router.push("/dashboard");
+        return;
+      }
       if (!activeUserId) return;
       setIsSubmitting(true);
       try {
@@ -107,7 +111,7 @@ export function WizardWrapper({ exercises }: { exercises: MasterExercise[] }) {
                 <div className="grid grid-cols-3 gap-4 px-2 text-xs font-bold text-gray-400 uppercase tracking-widest text-center">
                   <div className="text-left">Set</div>
                   <div>{activeExercise.tracking_type === "time" ? "Seconds" : activeExercise.tracking_type === "volume" ? "Volume" : "Reps"}</div>
-                  <div>Weight (lbs)</div>
+                  <div>Weight (kg)</div>
                 </div>
 
                 {currentSets.map((set) => (
@@ -117,10 +121,12 @@ export function WizardWrapper({ exercises }: { exercises: MasterExercise[] }) {
                     <Input
                       type="number"
                       min={0}
+                      disabled={isReadOnly}
                       value={
                         activeExercise.tracking_type === "time" ? set.duration_seconds || "" : set.reps || ""
                       }
                       onChange={(e) => {
+                        if (isReadOnly) return;
                         const val = parseInt(e.target.value) || 0;
                         setMetric(
                           activeExercise.id, 
@@ -129,18 +135,20 @@ export function WizardWrapper({ exercises }: { exercises: MasterExercise[] }) {
                           val
                         );
                       }}
-                      className="text-center text-xl font-bold py-6 bg-white border-gray-200 focus-visible:ring-2 focus-visible:ring-[#1D9E75] focus-visible:border-[#1D9E75] rounded-xl"
+                      className="text-center text-xl font-bold py-6 bg-white border-gray-200 focus-visible:ring-2 focus-visible:ring-[#1D9E75] focus-visible:border-[#1D9E75] rounded-xl disabled:bg-gray-100 disabled:opacity-70"
                     />
 
                     <Input
                       type="number"
                       min={0}
+                      disabled={isReadOnly}
                       value={set.weight || ""}
                       onChange={(e) => {
+                        if (isReadOnly) return;
                         const val = parseFloat(e.target.value) || 0;
                         setMetric(activeExercise.id, set.set_number, "weight", val);
                       }}
-                      className="text-center text-xl font-bold py-6 bg-white border-gray-200 focus-visible:ring-2 focus-visible:ring-[#1D9E75] focus-visible:border-[#1D9E75] rounded-xl"
+                      className="text-center text-xl font-bold py-6 bg-white border-gray-200 focus-visible:ring-2 focus-visible:ring-[#1D9E75] focus-visible:border-[#1D9E75] rounded-xl disabled:bg-gray-100 disabled:opacity-70"
                     />
                   </div>
                 ))}
@@ -163,7 +171,7 @@ export function WizardWrapper({ exercises }: { exercises: MasterExercise[] }) {
           disabled={isSubmitting || !showInputs}
           className="flex-[2] py-7 text-lg bg-[#1D9E75] text-white hover:bg-[#16825f] font-bold shadow-md rounded-2xl disabled:bg-gray-300 disabled:text-gray-500 disabled:shadow-none"
         >
-          {isSubmitting ? "Saving..." : isLastStep ? "Finish & Save Workout" : "Next Exercise"}
+          {isSubmitting ? "Saving..." : isLastStep ? (isReadOnly ? "Finish Review" : "Finish & Save Workout") : "Next Exercise"}
         </Button>
       </div>
     </div>

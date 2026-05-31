@@ -1,18 +1,18 @@
 import type { Metadata, Viewport } from "next";
-import { DM_Serif_Display, Inter } from "next/font/google";
+import { Nunito } from "next/font/google";
 import Header from "@/components/layout/Header";
 import { cn } from "@/lib/utils";
 import "./globals.css";
 
-const inter = Inter({
+const nunito = Nunito({
   subsets: ["latin"],
   variable: "--font-sans",
   display: "swap",
 });
 
-const dmSerifDisplay = DM_Serif_Display({
+const nunitoHeading = Nunito({
   subsets: ["latin"],
-  weight: "400",
+  weight: "700",
   variable: "--font-heading",
   display: "swap",
 });
@@ -50,7 +50,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={cn("light h-full antialiased", inter.variable, dmSerifDisplay.variable)}
+      className={cn("light h-full antialiased", nunito.variable, nunitoHeading.variable)}
       style={{ colorScheme: "light", backgroundColor: "#F8F7F4" }}
       suppressHydrationWarning
     >

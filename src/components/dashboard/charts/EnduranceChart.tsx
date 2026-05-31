@@ -12,7 +12,7 @@ export function EnduranceChart({ data }: { data: ChartDataPoint[] }) {
   if (!data || data.length === 0) {
     return (
       <div className="flex h-80 flex-col items-center justify-center rounded-xl border border-dashed border-gray-300 bg-white p-6 text-center shadow-sm">
-        <img src="/assets/panda-resting.svg" alt="Resting Panda" className="w-32 h-32 opacity-60 mb-4" />
+        <img src="/icons/panda.webp" alt="Resting Panda" className="w-32 h-32 opacity-60 mb-4" />
         <h2 className="text-[24px] font-medium text-[#2C2C2A] mb-1">No endurance data available</h2>
         <p className="text-[15px] text-[#888780]">Log a workout to see your progress!</p>
       </div>

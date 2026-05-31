@@ -27,6 +27,17 @@ export interface MasterExercise {
   safety_note: string | null;
 }
 
+export interface MasterHabit {
+  id: string;
+  user_id: string;
+  day_of_week: string;
+  nutrition_text: string | null;
+  supplements_text: string | null;
+  night_routine_text: string | null;
+}
+
+export type MasterHabitInsert = Omit<MasterHabit, "id">;
+
 export interface WorkoutLog {
   id: string;
   user_id: string;
@@ -152,6 +163,12 @@ export interface Database {
         Row: UserStats & Record<string, unknown>;
         Insert: UserStatsInsert & Record<string, unknown>;
         Update: UserStatsUpdate & Record<string, unknown>;
+        Relationships: TableRelationship[];
+      };
+      master_habits: {
+        Row: MasterHabit & Record<string, unknown>;
+        Insert: MasterHabitInsert & Record<string, unknown>;
+        Update: Partial<MasterHabit> & Record<string, unknown>;
         Relationships: TableRelationship[];
       };
     };

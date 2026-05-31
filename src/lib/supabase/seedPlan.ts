@@ -1,5 +1,5 @@
 import { supabase } from "./client";
-import { MasterExerciseInsert } from "@/types/database.types";
+import { MasterExerciseInsert, MasterHabitInsert } from "@/types/database.types";
 
 export async function seedPragamanPlan(userId: string) {
   const plan: MasterExerciseInsert[] = [
@@ -279,9 +279,41 @@ export async function seedPragamanPlan(userId: string) {
     }
   ];
 
+  const { data: existing, error: fetchError } = await supabase
+    .from("master_exercises")
+    .select("id")
+    .eq("user_id", userId)
+    .limit(1);
+
+  if (fetchError) {
+    throw new Error(`Failed to check existing plan: ${fetchError.message}`);
+  }
+
+  if (existing && existing.length > 0) {
+    console.log("Plan already seeded for this user. Skipping to prevent duplicates.");
+    return;
+  }
+
   const { error } = await supabase.from("master_exercises").insert(plan);
 
   if (error) {
     throw new Error(`Failed to seed plan: ${error.message}`);
+  }
+}
+
+export async function seedPragamanHabits(userId: string) {
+  const DAYS = ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"];
+  const habits: MasterHabitInsert[] = DAYS.map(day => ({
+    user_id: userId,
+    day_of_week: day,
+    nutrition_text: "Sattu, 3-4 eggs, green moong & chana bowl",
+    night_routine_text: "500ml milk, walnuts, nut mix",
+    supplements_text: "Creatine (3-5g), Whey Protein, Omega-3, Vitamin D3, Vitamin B12"
+  }));
+
+  const { error } = await supabase.from("master_habits").upsert(habits, { onConflict: 'user_id,day_of_week' });
+
+  if (error) {
+    console.warn(`Failed to seed habits (table might not exist yet): ${error.message}`);
   }
 }

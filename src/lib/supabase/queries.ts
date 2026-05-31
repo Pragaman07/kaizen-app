@@ -1,6 +1,6 @@
 import { supabase } from "@/lib/supabase/client";
 import type { DailyHabitField, DashboardData } from "@/types/app.types";
-import type { DailyTracking, Database, MasterExercise, MasterExerciseInsert, UserStats, SetLogInsert } from "@/types/database.types";
+import type { DailyTracking, Database, MasterExercise, MasterExerciseInsert, UserStats, SetLogInsert, MasterHabit, MasterHabitInsert } from "@/types/database.types";
 import type { PostgrestError } from "@supabase/supabase-js";
 
 const DAILY_HABIT_FIELDS: readonly DailyHabitField[] = [
@@ -255,6 +255,35 @@ export async function fetchTodayWorkout(
   dayOfWeek: string,
 ): Promise<MasterExercise[]> {
   return fetchDayPlan(userId, dayOfWeek);
+}
+
+export async function fetchHabitPlan(userId: string, dayOfWeek: string): Promise<MasterHabit | null> {
+  const { data, error } = await supabase
+    .from("master_habits")
+    .select("*")
+    .eq("user_id", userId)
+    .eq("day_of_week", dayOfWeek)
+    .maybeSingle();
+
+  if (error) {
+    console.warn("Failed to fetch habit plan (table might not exist yet):", error.message);
+    return null;
+  }
+
+  return data as MasterHabit | null;
+}
+
+export async function saveHabitPlan(userId: string, dayOfWeek: string, plan: MasterHabitInsert): Promise<void> {
+  const { error } = await supabase
+    .from("master_habits")
+    .upsert(
+      plan,
+      { onConflict: 'user_id,day_of_week' }
+    );
+
+  if (error) {
+    throw mapPostgrestError("Failed to save habit plan.", error);
+  }
 }
 
 export async function submitWorkoutSession(

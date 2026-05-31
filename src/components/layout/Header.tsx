@@ -1,4 +1,5 @@
 import ProfileSwitcher from "@/components/layout/ProfileSwitcher";
+import Link from "next/link";
 
 const HEADER_BG = "#F8F7F4";
 
@@ -12,15 +13,10 @@ export default function Header() {
       }}
     >
       <div className="mx-auto flex h-14 max-w-5xl items-center justify-between gap-4 px-4">
-        <div className="flex items-center gap-2">
-          <span
-            className="font-heading text-2xl leading-none tracking-tight text-primary"
-            aria-label="Kaizen"
-          >
-            改善
-          </span>
-          <span className="sr-only">Kaizen</span>
-        </div>
+        <Link href="/dashboard" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
+          <img src="/icons/icon-192.png" alt="Kaizen Logo" className="w-8 h-8 rounded-md" />
+          <span className="font-heading text-xl font-bold tracking-tight text-primary">Kaizen</span>
+        </Link>
         <ProfileSwitcher />
       </div>
     </header>
