@@ -22,13 +22,15 @@ export const useUserStore = create<UserState>()(
       isAdmin: false,
       setActiveUser: (id: string) => set({ activeUserId: id }),
       setAuthenticatedUser: (id: string | null, isAdmin = false) => 
-        set((state) => ({ 
-          authenticatedUserId: id, 
-          isAdmin,
-          // If not admin, force activeUser to authenticated user. 
-          // If admin, keep the activeUser if it exists, otherwise set to authenticated user.
-          activeUserId: (!isAdmin || !state.activeUserId) ? id : state.activeUserId
-        })),
+        set((state) => {
+          const isNewLogin = state.authenticatedUserId !== id;
+          const shouldResetActiveUser = !isAdmin || !state.activeUserId || isNewLogin;
+          return {
+            authenticatedUserId: id,
+            isAdmin,
+            activeUserId: shouldResetActiveUser ? id : state.activeUserId
+          };
+        }),
       clearAuth: () => set({ activeUserId: null, authenticatedUserId: null, isAdmin: false }),
     }),
     {

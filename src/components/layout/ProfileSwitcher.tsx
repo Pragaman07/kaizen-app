@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useId, useRef, useState, type CSSProperties } from "react";
-import { Check, ChevronDown, Download, Wrench, LogOut } from "lucide-react";
+import { Check, ChevronDown, Download, Wrench, LogOut, User } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useUserStore, useUserStoreHydrated } from "@/lib/store/useUserStore";
 import { supabase } from "@/lib/supabase/client";
@@ -47,6 +47,16 @@ export default function ProfileSwitcher() {
       });
     }
   }, [isAdmin, authenticatedUserId]);
+
+  useEffect(() => {
+    if (users.length > 0 && activeUserId && authenticatedUserId) {
+      if (!users.some(u => u.id === activeUserId)) {
+         setActiveUser(authenticatedUserId);
+      }
+    } else if (users.length > 0 && !activeUserId && authenticatedUserId) {
+       setActiveUser(authenticatedUserId);
+    }
+  }, [users, activeUserId, authenticatedUserId, setActiveUser]);
 
   useEffect(() => {
     if (!open) return;
@@ -157,6 +167,21 @@ export default function ProfileSwitcher() {
                 <Wrench className="size-4 shrink-0" style={{ color: CHARCOAL }} />
               </span>
               <span className="flex-1 font-medium">Plan Builder</span>
+            </button>
+          </li>
+          <li>
+            <button
+              type="button"
+              className="flex w-full items-center gap-3 px-3 py-2.5 text-left text-sm transition-colors hover:bg-gray-100"
+              style={{ color: CHARCOAL, backgroundColor: "#FFFFFF" }}
+              onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = TEAL_MIST; }}
+              onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = "#FFFFFF"; }}
+              onClick={() => { window.location.href = `/profile`; closeMenu(); }}
+            >
+              <span className="flex size-8 shrink-0 items-center justify-center rounded-full text-sm font-semibold" style={{ backgroundColor: "transparent" }} aria-hidden>
+                <User className="size-4 shrink-0" style={{ color: CHARCOAL }} />
+              </span>
+              <span className="flex-1 font-medium">My Profile</span>
             </button>
           </li>
           <li>

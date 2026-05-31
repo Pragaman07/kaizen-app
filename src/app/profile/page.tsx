@@ -5,9 +5,10 @@ import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase/client";
 import { useUserStore } from "@/lib/store/useUserStore";
 
-export default function SetupPage() {
+export default function ProfilePage() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
+  const [isFetching, setIsFetching] = useState(true);
   
   const [formData, setFormData] = useState({
     name: "",
@@ -18,19 +19,35 @@ export default function SetupPage() {
     activity_level: "",
     experience_level: "",
   });
-  
-  const [commitment, setCommitment] = useState(false);
 
   useEffect(() => {
-    supabase.auth.getUser().then(({ data: { user } }) => {
-      if (user) {
-        setFormData(prev => ({
-          ...prev,
-          name: user.user_metadata?.full_name || prev.name
-        }));
+    async function loadProfile() {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        return router.push('/login');
       }
-    });
-  }, []);
+
+      const { data, error } = await supabase
+        .from('users')
+        .select('*')
+        .eq('id', user.id)
+        .single();
+
+      if (data && !error) {
+        setFormData({
+          name: data.name || user.user_metadata?.full_name || "",
+          current_weight: data.current_weight?.toString() || "",
+          target_weight: data.target_weight?.toString() || "",
+          height: data.height?.toString() || "",
+          primary_goal: data.primary_goal || "",
+          activity_level: data.activity_level || "",
+          experience_level: data.experience_level || "",
+        });
+      }
+      setIsFetching(false);
+    }
+    loadProfile();
+  }, [router]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -39,9 +56,8 @@ export default function SetupPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!commitment) return alert("You must commit to the Kaizen philosophy.");
-    
     setIsLoading(true);
+    
     const { data: { user } } = await supabase.auth.getUser();
     
     if (!user) {
@@ -59,7 +75,6 @@ export default function SetupPage() {
         primary_goal: formData.primary_goal || null,
         activity_level: formData.activity_level || null,
         experience_level: formData.experience_level || null,
-        profile_completed: true,
       })
       .eq('id', user.id);
 
@@ -68,18 +83,26 @@ export default function SetupPage() {
       return alert("Failed to save profile: " + error.message);
     }
 
-    // Explicitly update Zustand and refresh to prevent hanging dashboard
+    alert("Profile updated successfully!");
+    setIsLoading(false);
     useUserStore.getState().setActiveUser(user.id);
     router.refresh();
-    router.push('/dashboard');
   };
 
+  if (isFetching) {
+    return (
+      <div className="flex min-h-[50vh] items-center justify-center">
+        <div className="text-[#888780] animate-pulse">Loading profile...</div>
+      </div>
+    );
+  }
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-[#F8F7F4] p-4 sm:p-8">
-      <div className="w-full max-w-lg rounded-2xl border border-[#e4e4e7] bg-white p-6 shadow-sm sm:p-10">
-        <div className="mb-8 text-center">
-          <h1 className="mb-2 font-heading text-3xl text-[#2C2C2A]">Welcome to Kaizen</h1>
-          <p className="text-[#888780]">Let's build your foundation.</p>
+    <div className="flex flex-col items-center justify-center bg-[#F8F7F4] p-4 sm:p-8 min-h-[calc(100vh-3.5rem)]">
+      <div className="w-full max-w-2xl rounded-2xl border border-[#e4e4e7] bg-white p-6 shadow-sm sm:p-10 mb-8">
+        <div className="mb-8 border-b border-[#e4e4e7] pb-6">
+          <h1 className="font-heading text-3xl text-[#2C2C2A]">Your Profile</h1>
+          <p className="mt-2 text-[#888780]">Manage your personal details and fitness goals.</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
@@ -197,27 +220,12 @@ export default function SetupPage() {
             </div>
           </div>
 
-          <div className="mt-8 rounded-xl bg-[#fafafa] p-4 border border-[#e4e4e7]">
-            <label className="flex items-start gap-3 cursor-pointer">
-              <input
-                type="checkbox"
-                required
-                checked={commitment}
-                onChange={(e) => setCommitment(e.target.checked)}
-                className="mt-1 h-5 w-5 rounded border-gray-300 text-[#1A2237] focus:ring-[#FFC857]"
-              />
-              <span className="text-sm font-medium text-[#2C2C2A]">
-                I commit to the Kaizen philosophy. 1% better, every single day.
-              </span>
-            </label>
-          </div>
-
           <button
             type="submit"
-            disabled={isLoading || !commitment}
-            className="w-full rounded-xl bg-[#1A2237] py-4 text-center text-sm font-bold text-[#FFC857] transition-colors hover:bg-[#2C2C2A] disabled:opacity-50"
+            disabled={isLoading}
+            className="w-full rounded-xl bg-[#1A2237] py-4 text-center text-sm font-bold text-[#FFC857] transition-colors hover:bg-[#2C2C2A] disabled:opacity-50 mt-4"
           >
-            {isLoading ? "Saving..." : "Start Journey"}
+            {isLoading ? "Saving Changes..." : "Save Profile"}
           </button>
         </form>
       </div>
