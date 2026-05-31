@@ -1,0 +1,1 @@
+export default function SafetyOverlay() { return <div></div> }

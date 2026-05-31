@@ -1,26 +1,137 @@
 @import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+/* 
+  Kaizen Design System – Tailwind v4 CSS-Driven Config
+  Palette: 
+    Navy Blue:   #1A2237
+    Mustard Gold: #FFC857
+  Typography:
+    Headings - 'DM Serif Display', serif
+    Body - 'Inter', sans-serif
+  Mode: Light-only, no dark mode present
+  Shadcn Zinc preset roles mirrored for compatibility
+*/
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Kaizen core palette */
+  --kaizen-navy:   #1A2237;
+  --kaizen-gold:   #FFC857;
+  --kaizen-white:  #FFFFFF;
+  --kaizen-gray-50:   #fafafa;
+  --kaizen-gray-100:  #f4f4f5;
+  --kaizen-gray-200:  #e4e4e7;
+  --kaizen-gray-300:  #d4d4d8;
+  --kaizen-gray-400:  #a1a1aa;
+  --kaizen-gray-500:  #71717a;
+  --kaizen-gray-600:  #52525b;
+  --kaizen-gray-700:  #3f3f46;
+  --kaizen-gray-800:  #27272a;
+  --kaizen-gray-900:  #18181b;
+  --kaizen-black:     #18181b;
+  --kaizen-red:       #ef4444;
+
+  /* Shadcn + Kaizen roles (Zinc preset base) */
+  --background:           var(--kaizen-white);
+  --foreground:           var(--kaizen-navy);
+  --primary:              var(--kaizen-navy);
+  --primary-foreground:   var(--kaizen-gold);
+  --secondary:            var(--kaizen-gold);
+  --secondary-foreground: var(--kaizen-navy);
+  --muted:                var(--kaizen-gray-100);
+  --muted-foreground:     var(--kaizen-gray-500);
+  --accent:               var(--kaizen-gold);
+  --accent-foreground:    var(--kaizen-navy);
+  --card:                 var(--kaizen-white);
+  --card-foreground:      var(--kaizen-navy);
+  --popover:              var(--kaizen-white);
+  --popover-foreground:   var(--kaizen-navy);
+  --border:               var(--kaizen-gray-200);
+  --input:                var(--kaizen-gray-100);
+  --ring:                 var(--kaizen-gold);
+  --destructive:          var(--kaizen-red);
+  --destructive-foreground: var(--kaizen-white);
+
+  /* Radius Tokens (Shadcn default sizes) */
+  --radius:    0.5rem;
+  --radius-sm: 0.375rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+
+  /* Typography system */
+  --font-sans:    'Inter', system-ui, sans-serif;
+  --font-heading: 'DM Serif Display', serif;
+  --font-mono: 'Geist Mono', 'SFMono-Regular', Menlo, monospace;
+
+  /* Prevent dark mode, all tokens are for light only! */
 }
 
+/* For tailwindcss-theme plugin users: thematic binding */
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+
+  --radius: var(--radius);
+  --radius-sm: var(--radius-sm);
+  --radius-md: var(--radius-md);
+  --radius-lg: var(--radius-lg);
+
+  --font-sans: var(--font-sans);
+  --font-heading: var(--font-heading);
+  --font-mono: var(--font-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+/* Base style layer */
+@layer base {
+  html {
+    @apply font-sans;
+    font-family: var(--font-sans);
+    background-color: var(--background);
+    color: var(--foreground);
+    /* Force light mode, disables user agent or OS color scheme detection */
+    color-scheme: light;
+  }
+  body {
+    background-color: var(--background);
+    color: var(--foreground);
+  }
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-heading);
+    color: var(--primary);
+    font-weight: 400;
+    margin-top: 0;
+    margin-bottom: 0.6em;
+    line-height: 1.15;
+  }
+  * {
+    border-color: var(--border);
+    font-family: inherit;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
-}
+/* There is no .dark selector or dark-mode logic anywhere – UI is strictly locked to light mode */
